@@ -32,6 +32,7 @@ var Reshell = function (prefix) {
   this.prefix = prefix;
   this.count = 0;
   this.env = {};
+
   this.stdin = document.getElementById(this.prefix+"_stdin");
   this.stdout = document.getElementById(this.prefix+"_stdin");
 
@@ -39,15 +40,16 @@ var Reshell = function (prefix) {
 
     type = type || "out";
     
-    var t = document.createElement('div');
-    t.setAttribute('id', this.prefix+"_"+type+"_"+this.count);
-    t.setAttribute('class', this.prefix+"_"+type);
+    var tp = document.createElement('pre');
+
+    tp.setAttribute('id', this.prefix+"_"+type+"_"+this.count);
+    tp.setAttribute('class', this.prefix+"_"+type);
 
     var tt = document.createTextNode(text);
 
-    t.appendChild(tt);
+    tp.appendChild(tt);
 
-    document.getElementById(this.prefix+"_stdout").appendChild(t);
+    document.getElementById(this.prefix+"_stdout").appendChild(tp);
   }
 
   this.eval = function () {
@@ -65,7 +67,7 @@ var Reshell = function (prefix) {
 
     var f = this.env[code[0]];
 
-    if (f) f(code);
+    if (f) f(tis, code);
     else this.puts("unknow command '"+code[0]+"'");
 
     this.count++;
@@ -76,7 +78,7 @@ var Reshell = function (prefix) {
       this.stdin.focus();
   }
 
-  this.clear = function (args) {
+  this.clear = function () {
 
       while(this.stdout.removeChild(this.stdout.lastChild)) {}
   }
@@ -91,12 +93,12 @@ var Reshell = function (prefix) {
 
   this.def('clear', this.clear);
 
-  this.def('env', function (args) {
+  this.def('env', function (shell, args) {
 
       var out = "";
-      out += "nada0\n"
-      out += "nada1"
-      this.puts(out);
+      out += "nada0\n";
+      out += "nada1";
+      shell.puts(out);
   });
 
 }
