@@ -1,0 +1,43 @@
+
+<html>
+<head>
+  <title>reshell</title>
+  <style>
+    body {
+      /*text-align: center;*/
+      color: #888;
+      font-family: Helvetica;
+      font-size: 14px;
+      margin: 20px 10px;
+    }
+    input {
+      color: #888;
+      font-family: Helvetica;
+      font-size: 14px;
+      border: 0px;
+    }
+    .reshell_in {
+      color: blue;
+    }
+  </style>
+
+  <script src="/js/reshell.js"></script>
+
+</head>
+
+<body>
+
+<div id="reshell_stdout"></div>
+<form onsubmit="reshell.eval(); return false;">
+$ <input id="reshell_stdin" type="text" />
+</form>
+
+<script>
+  var reshell = new Reshell('reshell');
+  reshell.puts("welcome", "welcome", "reshell v0.0.1 (c) 2008 john mettraux");
+  reshell.focus();
+</script>
+
+</body>
+</html>
+

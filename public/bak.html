@@ -1,0 +1,74 @@
+
+<html>
+<head>
+  <title>reshell</title>
+  <style>
+    body {
+      /*text-align: center;*/
+      color: #888;
+      font-family: Helvetica;
+      font-size: 14px;
+      margin: 20px 10px;
+    }
+    input {
+      color: #888;
+      font-family: Helvetica;
+      font-size: 14px;
+      border: 0px;
+    }
+    .reshell_in {
+      color: blue;
+    }
+  </style>
+</head>
+
+<body>
+
+<script>
+
+  var count = 0;
+
+  function get_stdin () {
+    return document.getElementById("reshell_stdin");
+  }
+
+  function reshell_puts (eid, clazz, text) {
+    
+    var t = document.createElement('div');
+    t['id'] = eid;
+    t.setAttribute('id', eid);
+    t.setAttribute('class', clazz);
+
+    var tt = document.createTextNode(text);
+
+    t.appendChild(tt);
+
+    document.getElementById("reshell_stdout").appendChild(t);
+  }
+
+  function reshell_eval () {
+
+    var code = get_stdin().value;
+
+    reshell_puts("in_"+count, "reshell_in", "$ "+code);
+
+    get_stdin().value = "";
+    count++;
+    get_stdin().focus();
+  }
+
+</script>
+
+<div id="reshell_stdout"></div>
+<form onsubmit="reshell_eval(); return false;">
+$ <input id="reshell_stdin" type="text" />
+</form>
+
+<script>
+  reshell_puts("welcome", "welcome", "reshell v0.0.1 (c) 2008 jmettraux");
+  get_stdin().focus();
+</script>
+
+</body>
+</html>
+
