@@ -35,12 +35,13 @@ var Reshell = function (prefix) {
   this.stdin = document.getElementById(this.prefix+"_stdin");
   this.stdout = document.getElementById(this.prefix+"_stdin");
 
-  this.puts = function (eid, clazz, text) {
+  this.puts = function (text, type) {
+
+    type = type || "out";
     
     var t = document.createElement('div');
-    t['id'] = eid;
-    t.setAttribute('id', eid);
-    t.setAttribute('class', clazz);
+    t.setAttribute('id', this.prefix+"_"+type+"_"+this.count);
+    t.setAttribute('class', this.prefix+"_"+type);
 
     var tt = document.createTextNode(text);
 
@@ -55,15 +56,17 @@ var Reshell = function (prefix) {
     this.stdin.value = "";
     this.stdin.focus();
 
-    var f = this.env[code];
+    this.puts("$ "+code, "in");
 
-    if (f) {
-        f();
-    }
-    else {
-        this.puts("in_"+this.count, this.prefix+"_in", "$ "+code);
-    }
+    if (code == '') return;
 
+    var code = code.split(" ");
+      // TODO : use regex for quote oriented splits
+
+    var f = this.env[code[0]];
+
+    if (f) f(code);
+    else this.puts("unknow command '"+code[0]+"'");
 
     this.count++;
   }
@@ -73,7 +76,8 @@ var Reshell = function (prefix) {
       this.stdin.focus();
   }
 
-  this.clear = function () {
+  this.clear = function (args) {
+
       while(this.stdout.removeChild(this.stdout.lastChild)) {}
   }
 
@@ -86,6 +90,14 @@ var Reshell = function (prefix) {
   // some basic commands
 
   this.def('clear', this.clear);
+
+  this.def('env', function (args) {
+
+      var out = "";
+      out += "nada0\n"
+      out += "nada1"
+      this.puts(out);
+  });
 
 }
 
