@@ -30,11 +30,14 @@
 var Reshell = function (prefix) {
 
   this.prefix = prefix;
-  this.count = 0;
+  //this.count = 0;
   this.env = {};
 
   this.stdin = document.getElementById(this.prefix+"_stdin");
   this.stdout = document.getElementById(this.prefix+"_stdin");
+
+  this.history_offset = -1;
+  this.history = [];
 
   this.puts = function (text, type) {
 
@@ -42,7 +45,7 @@ var Reshell = function (prefix) {
     
     var tp = document.createElement('pre');
 
-    tp.setAttribute('id', this.prefix+"_"+type+"_"+this.count);
+    //tp.setAttribute('id', this.prefix+"_"+type+"_"+this.count);
     tp.setAttribute('class', this.prefix+"_"+type);
 
     var tt = document.createTextNode(text);
@@ -50,9 +53,13 @@ var Reshell = function (prefix) {
     tp.appendChild(tt);
 
     document.getElementById(this.prefix+"_stdout").appendChild(tp);
+
+    return tp;
   }
 
   this.eval = function () {
+
+    this.history_offset = -1;
 
     var code = this.stdin.value;
     this.stdin.value = "";
@@ -62,15 +69,48 @@ var Reshell = function (prefix) {
 
     if (code == '') return;
 
-    var code = code.split(" ");
+    var cmd = code.split(" ");
       // TODO : use regex for quote oriented splits
 
-    var f = this.env[code[0]];
+    var f = this.env[cmd[0]];
 
-    if (f) f(tis, code);
-    else this.puts("unknow command '"+code[0]+"'");
+    if (f) {
 
-    this.count++;
+      this.history.unshift(code);
+      while(this.history.length > 63) this.history.pop;
+
+      f(this, cmd);
+    }
+    else {
+      this.puts("unknow command '"+cmd[0]+"'");
+    }
+  }
+
+  //
+  // history inc
+  //
+  this.hinc = function (count) {
+
+    var code = this.history[this.history_offset + count];
+    if ( ! code) return;
+    this.stdin.value = code;
+    this.history_offset += count;
+  }
+
+  this.onkey = function (evt) {
+
+    var e = evt || window.event;
+    var c = e.charCode || e.keyCode;
+
+    if (c == 38) {
+
+      this.hinc(1);
+    }
+    else if (c == 40) {
+
+      this.hinc(-1);
+    }
+    return false;
   }
 
   this.focus = function () {
@@ -81,6 +121,7 @@ var Reshell = function (prefix) {
   this.clear = function () {
 
       while(this.stdout.removeChild(this.stdout.lastChild)) {}
+        // not very snappy :(
   }
 
   this.def = function (name, func) {
@@ -99,6 +140,16 @@ var Reshell = function (prefix) {
       out += "nada0\n";
       out += "nada1";
       shell.puts(out);
+  });
+
+  this.def('echo', function (shell, args) {
+
+      shell.puts(args.slice(1).join(" "));
+  });
+
+  this.def('his', function (shell, args) {
+
+      shell.puts(shell.history.join("\n"));
   });
 
 }

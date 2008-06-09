@@ -32,7 +32,7 @@
 
 <div id="reshell_stdout"></div>
 <form onsubmit="reshell.eval(); return false;">
-$ <input id="reshell_stdin" type="text" />
+$ <input id="reshell_stdin" type="text" onkeyup="return reshell.onkey(event)" />
 </form>
 
 <script>
