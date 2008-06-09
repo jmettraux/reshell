@@ -115,18 +115,18 @@ var Reshell = function (prefix) {
 
   this.focus = function () {
 
-      this.stdin.focus();
+    this.stdin.focus();
   }
 
   this.clear = function () {
 
-      while(this.stdout.removeChild(this.stdout.lastChild)) {}
-        // not very snappy :(
+    while(this.stdout.removeChild(this.stdout.lastChild)) {}
+      // not very snappy :(
   }
 
   this.def = function (name, func) {
 
-      this.env[name] = func;
+    this.env[name] = func;
   }
 
   //
@@ -136,21 +136,27 @@ var Reshell = function (prefix) {
 
   this.def('env', function (shell, args) {
 
-      var out = "";
-      out += "nada0\n";
-      out += "nada1";
-      shell.puts(out);
+    var out = "";
+    for (var key in shell.env) {
+      var val = shell.env[key];
+      if ((typeof val) == 'function') val = "command";
+      out += (""+key+"="+val+"\n");
+    }
+    shell.puts(out);
   });
 
   this.def('echo', function (shell, args) {
 
-      shell.puts(args.slice(1).join(" "));
+    shell.puts(args.slice(1).join(" "));
   });
 
-  this.def('his', function (shell, args) {
+  this.def('history', function (shell, args) {
 
-      shell.puts(shell.history.join("\n"));
+    shell.puts(shell.history.join("\n"));
   });
+
+  // TODO : implement 'alias'
+  // TODO : implement 'set' or 'export'
 
 }
 
