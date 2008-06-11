@@ -69,7 +69,15 @@ var Reshell = function (prefix) {
 
     if (code == '') return;
 
-    var cmd = code.split(" ");
+    var equality = code.match(/(\S*) *= *(.*)/);
+
+    if (equality) {
+
+      this.env[equality[1]] = equality[2];
+      return;
+    }
+
+    var cmd = code.split(/ /);
       // TODO : use regex for quote oriented splits
 
     var f = this.env[cmd[0]];
