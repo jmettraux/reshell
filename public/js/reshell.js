@@ -90,7 +90,7 @@ var Reshell = function (prefix) {
       f(this, cmd);
     }
     else {
-      this.puts("unknow command '"+cmd[0]+"'");
+      this.puts("unknown command '"+cmd[0]+"'");
     }
   }
 
@@ -159,6 +159,11 @@ var Reshell = function (prefix) {
   });
 
   this.def('history', function (shell, args) {
+
+    shell.puts(shell.history.join("\n"));
+  });
+
+  this.def('printf', function (shell, args) {
 
     shell.puts(shell.history.join("\n"));
   });
